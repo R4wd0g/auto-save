@@ -18,6 +18,7 @@ delay_field = "auto_save_delay_in_seconds"
 all_files_field = "auto_save_all_files"
 current_file_field = "auto_save_current_file"
 ignore_files_field = "auto_save_ignore_files"
+only_files_field = "auto_save_only_files"
 backup_field = "auto_save_backup"
 backup_suffix_field = "auto_save_backup_suffix"
 
@@ -50,6 +51,10 @@ class AutoSaveListener(sublime_plugin.EventListener):
     for path in settings.get(ignore_files_field):
       if filename.endswith(path):
         return
+
+    only_files = settings.get(only_files_field, [])
+    if only_files and not any(filename.lower().endswith(extension.lower()) for extension in only_files):
+      return
 
     if not settings.get(all_files_field) and settings.get(current_file_field) != filename:
       return
